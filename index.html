@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aj Website - aaditya-toolkit</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f1724;
+      color: #e6eef8;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: linear-gradient(90deg, #0b1220, #122030);
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+    main {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 20px;
+      background: #071026;
+      border-radius: 10px;
+    }
+    h2 {
+      color: #fff;
+    }
+    .owner {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+    }
+    footer {
+      text-align: center;
+      padding: 15px;
+      background: #0b1220;
+      color: #9fb0c8;
+      margin-top: 40px;
+      font-size: 0.9rem;
+    }
+    a {
+      color: #6eb5ff;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Aj Website</h1>
+    <p>Welcome to my GitHub Pages website</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>About This Website</h2>
+      <p>This is the <strong>aaditya-toolkit</strong> project hosted using GitHub Pages.</p>
+      <p>You can add tools, projects, or any content here.</p>
+    </section>
+
+    <section id="owner" class="owner">
+      <h2>Owner Information</h2>
+      <p><strong>Name:</strong> Aj Kumar</p>
+      <p><strong>Contact:</strong> aj@example.com</p>
+      <p><strong>GitHub:</strong> <a href="https://github.com/HO42624" target="_blank">github.com/HO42624</a></p>
+    </section>
+  </main>
+
+  <footer>
+    © <span id="year"></span> Aj Kumar — Hosted on GitHub Pages
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+  </html>
