@@ -4,8 +4,297 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>शैक्षणिक पुस्तकालय - Educational Library</title>
-    <link rel="stylesheet" href="styles.css">
-<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+    
+    <style>
+        /* --- CSS Styles (Inline) --- */
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --bg-light: #f8f9fa;
+            --bg-dark: #343a40;
+            --text-dark: #333;
+            --text-light: #fff;
+            --card-bg: #fff;
+            --border-color: #dee2e6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        footer {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            text-align: center;
+            padding: 15px 0;
+            margin-top: 40px;
+        }
+
+        section h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+        }
+
+        /* --- Upload Area --- */
+        .upload-area {
+            border: 3px dashed var(--secondary-color);
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: background-color 0.3s, border-color 0.3s;
+            background-color: #fff;
+        }
+
+        .upload-area:hover, .upload-area.dragover {
+            background-color: #e9ecef;
+            border-color: var(--primary-color);
+        }
+
+        .upload-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .upload-area input[type="file"] {
+            display: none;
+        }
+
+        /* --- Progress Bar --- */
+        .upload-progress {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+
+        .progress-fill {
+            height: 20px;
+            background-color: var(--success-color);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        /* --- Search Bar --- */
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .search-bar input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .search-bar button {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        /* --- PDF Grid and Cards --- */
+        .pdf-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .pdf-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+        }
+
+        .pdf-icon {
+            font-size: 2em;
+            margin-right: 15px;
+            color: var(--error-color);
+        }
+
+        .pdf-name {
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 180px;
+        }
+
+        .pdf-actions button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-left: 5px;
+        }
+
+        .pdf-actions .view-btn {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+        }
+        
+        /* --- Modal (PDF Viewer) --- */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8); 
+        }
+
+        .modal-content {
+            background-color: var(--bg-light);
+            margin: 5% auto; 
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            height: 90vh; 
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            z-index: 1001;
+            cursor: pointer;
+        }
+
+        .pdf-viewer {
+            flex-grow: 1;
+            margin-bottom: 10px;
+        }
+
+        .pdf-viewer iframe {
+            border: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        .pdf-controls {
+            text-align: center;
+        }
+        
+        /* --- Admin Login/Panel (Simplified CSS) --- */
+        .admin-login-overlay {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+        }
+
+        .admin-login-modal {
+            background-color: var(--card-bg);
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 400px;
+            position: relative;
+        }
+        
+        .admin-panel {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            padding: 20px 0;
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .admin-section h4 {
+            border-bottom: 1px solid #6c757d;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+        }
+
+        /* --- Toast Notifications --- */
+        .toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #333;
+            color: var(--text-light);
+            text-align: center;
+            border-radius: 2px;
+            padding: 16px;
+            position: fixed;
+            z-index: 3000;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+        }
+        .toast-success { background-color: var(--success-color); }
+        .toast-error { background-color: var(--error-color); }
+        .toast-info { background-color: var(--primary-color); }
+    </style>
 </head>
 <body>
     <header>
@@ -18,7 +307,7 @@
         </div>
     </header>
 
-    <div class="admin-login-overlay" id="adminLoginOverlay" style="display: none;">
+    <div class="admin-login-overlay" id="adminLoginOverlay">
         <div class="admin-login-modal">
             <div class="admin-login-header">
                 <h3>👑 Admin Login</h3>
@@ -32,52 +321,27 @@
         </div>
     </div>
 
-    <div class="admin-panel" id="adminPanel" style="display: none;">
-        <div class="admin-header">
-            <h3>👑 Admin Control Panel</h3>
-            <div class="admin-controls">
-                <span id="adminStatus">Logged in as Admin</span>
-                <button onclick="adminLogout()">Logout</button>
-            </div>
-        </div>
-        <div class="admin-body">
-            <div class="admin-section">
-                <h4>📄 Add New PDF</h4>
-                <div class="admin-upload-area">
-                    <input type="file" id="adminPdfInput" accept=".pdf" multiple>
-                    <div class="admin-upload-content">
-                        <div class="admin-upload-icon">📁</div>
-                        <p>Click to select PDF files for upload</p>
-                        <small>Only admins can add PDFs to the library</small>
-                    </div>
-                </div>
-                <button id="adminUploadBtn" onclick="adminUploadPDFs()">Upload Selected PDFs</button>
-            </div>
-            
-            <div class="admin-section">
-                <h4>📊 Library Statistics</h4>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-number" id="totalPDFs">0</div>
-                        <div class="stat-label">Total PDFs</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="totalSize">0 MB</div>
-                        <div class="stat-label">Total Size</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="todayUploads">0</div>
-                        <div class="stat-label">Today's Uploads</div>
-                    </div>
+    <div class="admin-panel" id="adminPanel">
+        <div class="container">
+            <div class="admin-header">
+                <h3>👑 Admin Control Panel</h3>
+                <div class="admin-controls">
+                    <span id="adminStatus">Logged in as Admin</span>
+                    <button onclick="adminLogout()">Logout</button>
                 </div>
             </div>
-
-            <div class="admin-section">
-                <h4>⚙️ Quick Actions</h4>
-                <div class="action-buttons">
-                    <button onclick="exportLibraryData()">📥 Export Library Data</button>
-                    <button onclick="clearAllPDFs()">🗑️ Clear All Local PDFs</button>
-                    <button onclick="refreshLibrary()">🔄 Refresh Library</button>
+            <div class="admin-body">
+                <div class="admin-section">
+                    <h4>📄 Add New PDF</h4>
+                    <div class="admin-upload-area">
+                        <input type="file" id="adminPdfInput" accept=".pdf" multiple>
+                        <div class="admin-upload-content">
+                            <div class="admin-upload-icon">📁</div>
+                            <p>Click to select PDF files for upload</p>
+                            <small>Only admins can add PDFs to the library</small>
+                        </div>
+                    </div>
+                    <button id="adminUploadBtn" onclick="adminUploadPDFs()">Upload Selected PDFs</button>
                 </div>
             </div>
         </div>
@@ -94,7 +358,7 @@
                     <p>Drag & Drop PDF files here or click to select</p>
                 </div>
             </div>
-            <div class="upload-progress" id="uploadProgress" style="display: none;">
+            <div class="upload-progress" id="uploadProgress">
                 <div class="progress-bar">
                     <div class="progress-fill" id="progressFill"></div>
                 </div>
@@ -134,7 +398,193 @@
     
     <div id="appToast" class="toast"></div>
 
-    <script src="script.js"></script>
-</body>
-  </html>
-                  
+    <script>
+        // --- JavaScript Logic (Inline) ---
+        class EducationalLibrary {
+            constructor() {
+                this.adminPassword = "808711"; // 👑 OWNER: अपना Admin Password यहां सेट करें
+                this.pdfs = []; 
+                this.currentPDF = null;
+                this.isAdmin = false;
+                this.init();
+            }
+
+            init() {
+                this.checkAdminAccess();
+                this.pdfs = this.loadPDFs();
+                this.setupEventListeners();
+                this.renderPDFGrid();
+                this.setupDragAndDrop();
+                this.setupAdminPanel();
+            }
+
+            setupEventListeners() {
+                const uploadArea = document.getElementById('uploadArea');
+                const pdfInput = document.getElementById('pdfInput');
+                
+                if (uploadArea) {
+                    uploadArea.addEventListener('click', () => {
+                        if (!this.isAdmin) pdfInput.click();
+                    });
+                }
+                
+                if (pdfInput) {
+                    pdfInput.addEventListener('change', (e) => {
+                        if (!this.isAdmin) this.handleFileSelect(e.target.files);
+                    });
+                }
+
+                const searchInput = document.getElementById('searchInput');
+                const searchBtn = document.getElementById('searchBtn');
+                
+                if (searchBtn) searchBtn.addEventListener('click', () => this.searchPDFs());
+                if (searchInput) searchInput.addEventListener('keyup', (e) => {
+                    if (e.key === 'Enter') this.searchPDFs();
+                });
+
+                const closeModal = document.getElementById('closeModal');
+                const downloadBtn = document.getElementById('downloadBtn');
+                const fullscreenBtn = document.getElementById('fullscreenBtn');
+                
+                if (closeModal) closeModal.addEventListener('click', () => this.closeModal());
+                if (downloadBtn) downloadBtn.addEventListener('click', () => this.downloadPDF());
+                if (fullscreenBtn) fullscreenBtn.addEventListener('click', () => this.toggleFullscreen());
+
+                window.addEventListener('click', (e) => {
+                    const modal = document.getElementById('pdfModal');
+                    if (modal && e.target === modal) {
+                        this.closeModal();
+                    }
+                });
+
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') this.closeModal();
+                    if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                        toggleAdminLogin();
+                    }
+                });
+            }
+
+            setupDragAndDrop() {
+                const uploadArea = document.getElementById('uploadArea');
+                if (!uploadArea) return;
+
+                ['dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    uploadArea.addEventListener(eventName, (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }, false);
+                });
+
+                uploadArea.addEventListener('dragover', () => uploadArea.classList.add('dragover'));
+                uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+
+                uploadArea.addEventListener('drop', (e) => {
+                    uploadArea.classList.remove('dragover');
+                    if (!this.isAdmin) {
+                        this.handleFileSelect(e.dataTransfer.files);
+                    } else {
+                        this.showToast('एडमिन पैनल का उपयोग करें / Use the Admin Panel to upload', 'info');
+                    }
+                });
+            }
+            
+            // --- Utility Methods ---
+
+            formatFileSize(bytes, decimals = 2) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const dm = decimals < 0 ? 0 : decimals;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+            }
+            
+            showToast(message, type = 'info', duration = 3000) {
+                let toast = document.getElementById('appToast');
+                if (!toast) return;
+                
+                toast.textContent = message;
+                toast.className = `toast toast-${type} show`;
+
+                setTimeout(() => {
+                    toast.className = 'toast';
+                }, duration);
+            }
+            
+            showUploadProgress() {
+                const progressEl = document.getElementById('uploadProgress');
+                if(progressEl) progressEl.style.display = 'flex';
+            }
+
+            hideUploadProgress() {
+                const progressEl = document.getElementById('uploadProgress');
+                if(progressEl) progressEl.style.display = 'none';
+                
+                const progressFill = document.getElementById('progressFill');
+                const progressText = document.getElementById('progressText');
+                if(progressFill) progressFill.style.width = '0%';
+                if(progressText) progressText.textContent = 'Uploading... 0%';
+            }
+
+            simulateUploadProgress() {
+                return new Promise(resolve => {
+                    let progress = 0;
+                    const progressFill = document.getElementById('progressFill');
+                    const progressText = document.getElementById('progressText');
+                    
+                    const interval = setInterval(() => {
+                        progress += 10;
+                        if (progress <= 100) {
+                            if(progressFill) progressFill.style.width = `${progress}%`;
+                            if(progressText) progressText.textContent = `Uploading... ${progress}%`;
+                        } else {
+                            clearInterval(interval);
+                            if(progressFill) progressFill.style.width = '100%';
+                            if(progressText) progressText.textContent = 'Upload Complete!';
+                            resolve();
+                        }
+                    }, 100);
+                });
+            }
+            
+            // --- PDF Data Management ---
+
+            loadPDFs() {
+                try {
+                    const saved = localStorage.getItem('educationalLibrary_pdfs');
+                    if (saved) {
+                        const pdfsMetadata = JSON.parse(saved);
+                        this.showToast(`पुस्तकालय से ${pdfsMetadata.length} PDF लोड की गईं।`, 'info');
+                        return pdfsMetadata;
+                    }
+                } catch (e) {
+                    console.warn('Could not load from localStorage:', e);
+                }
+
+                // Initial Static Data (No external PDFs used here to keep it single file)
+                return []; 
+            }
+
+            savePDFs() {
+                try {
+                    localStorage.setItem('educationalLibrary_pdfs', JSON.stringify(this.pdfs));
+                } catch (e) {
+                    console.error('Could not save to localStorage:', e);
+                    this.showToast('PDFs save करने में त्रुटि हुई।', 'error');
+                }
+            }
+            
+            // --- Upload and Rendering ---
+
+            async handleFileSelect(files) {
+                const pdfFiles = Array.from(files).filter(file => file.type === 'application/pdf');
+                
+                if (pdfFiles.length === 0) {
+                    this.showToast('कृपया केवल PDF फाइलें चुनें / Please select only PDF files', 'error');
+                    return;
+                }
+
+                let uploadCount = 0;
+                for (const file of pdfFiles) {
+                    if (await this.upload
