@@ -1,39 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Aj – Document Viewer</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📚 शैक्षणिक पुस्तकालय</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
 <header class="header">
-  <h1>📚 Aj – Document Viewer</h1>
-  <p>By Aaditya 😊</p>
+  <h1>📚 शैक्षणिक पुस्तकालय</h1>
+  <p class="subtitle">A Classic Academic Digital Library</p>
 </header>
 
-<section class="subject-list">
-  <h2>🎓 Select Subject</h2>
-  <select id="subjectSelect">
-    <option value="">Select Subject</option>
-    <option value="Maths">📐 Maths</option>
-    <option value="Physics">⚛️ Physics</option>
+<section class="controls">
+  <input type="text" id="searchInput" placeholder="🔍 PDF खोजें / Search PDF">
+  
+  <select id="subjectFilter">
+    <option value="all">📚 All Subjects</option>
   </select>
 </section>
 
-<section class="document-list" id="documentList">
-  <p>Select a subject to view PDFs 📄</p>
+<section class="library">
+  <div class="pdf-grid" id="pdfGrid"></div>
 </section>
 
-<section class="viewer" id="viewer">
-  <button onclick="backToList()">⬅ Back</button>
+<div class="modal" id="pdfModal">
+  <span class="close" onclick="closePDF()">×</span>
   <iframe id="pdfFrame"></iframe>
-</section>
+</div>
 
 <footer class="footer">
-  <p>Free Educational PDFs – Ad Free 🎉</p>
+  <p>© 2026 Educational Library • Made with ❤️ for Students</p>
 </footer>
 
 <script src="script.js"></script>
