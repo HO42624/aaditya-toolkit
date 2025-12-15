@@ -1,40 +1,140 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>📚 शैक्षणिक पुस्तकालय</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>शैक्षणिक पुस्तकालय - Educational Library</title>
+    <link rel="stylesheet" href="styles.css">
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
 </head>
-
 <body>
+    <header>
+        <div class="container">
+            <h1>📚 शैक्षणिक पुस्तकालय</h1>
+            <p>Educational Library - Upload & View PDFs Online</p>
+            <div class="admin-toggle">
+                <button id="adminToggleBtn" onclick="toggleAdminLogin()">👑 Admin</button>
+            </div>
+        </div>
+    </header>
 
-<header class="header">
-  <h1>📚 शैक्षणिक पुस्तकालय</h1>
-  <p class="subtitle">A Classic Academic Digital Library</p>
-</header>
+    <div class="admin-login-overlay" id="adminLoginOverlay" style="display: none;">
+        <div class="admin-login-modal">
+            <div class="admin-login-header">
+                <h3>👑 Admin Login</h3>
+                <button class="close-btn" onclick="closeAdminLogin()">&times;</button>
+            </div>
+            <div class="admin-login-body">
+                <label for="adminPasswordInput">Admin Password:</label>
+                <input type="password" id="adminPasswordInput" placeholder="Enter admin password">
+                <button onclick="adminLogin()">Login to Admin Panel</button>
+            </div>
+        </div>
+    </div>
 
-<section class="controls">
-  <input type="text" id="searchInput" placeholder="🔍 PDF खोजें / Search PDF">
-  
-  <select id="subjectFilter">
-    <option value="all">📚 All Subjects</option>
-  </select>
-</section>
+    <div class="admin-panel" id="adminPanel" style="display: none;">
+        <div class="admin-header">
+            <h3>👑 Admin Control Panel</h3>
+            <div class="admin-controls">
+                <span id="adminStatus">Logged in as Admin</span>
+                <button onclick="adminLogout()">Logout</button>
+            </div>
+        </div>
+        <div class="admin-body">
+            <div class="admin-section">
+                <h4>📄 Add New PDF</h4>
+                <div class="admin-upload-area">
+                    <input type="file" id="adminPdfInput" accept=".pdf" multiple>
+                    <div class="admin-upload-content">
+                        <div class="admin-upload-icon">📁</div>
+                        <p>Click to select PDF files for upload</p>
+                        <small>Only admins can add PDFs to the library</small>
+                    </div>
+                </div>
+                <button id="adminUploadBtn" onclick="adminUploadPDFs()">Upload Selected PDFs</button>
+            </div>
+            
+            <div class="admin-section">
+                <h4>📊 Library Statistics</h4>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalPDFs">0</div>
+                        <div class="stat-label">Total PDFs</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalSize">0 MB</div>
+                        <div class="stat-label">Total Size</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="todayUploads">0</div>
+                        <div class="stat-label">Today's Uploads</div>
+                    </div>
+                </div>
+            </div>
 
-<section class="library">
-  <div class="pdf-grid" id="pdfGrid"></div>
-</section>
+            <div class="admin-section">
+                <h4>⚙️ Quick Actions</h4>
+                <div class="action-buttons">
+                    <button onclick="exportLibraryData()">📥 Export Library Data</button>
+                    <button onclick="clearAllPDFs()">🗑️ Clear All Local PDFs</button>
+                    <button onclick="refreshLibrary()">🔄 Refresh Library</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<div class="modal" id="pdfModal">
-  <span class="close" onclick="closePDF()">×</span>
-  <iframe id="pdfFrame"></iframe>
-</div>
+    <main class="container">
+        <section class="upload-section" id="userUploadSection">
+            <h2>PDF अपलोड करें / Upload PDF</h2>
+            <div class="upload-area" id="uploadArea">
+                <input type="file" id="pdfInput" accept=".pdf" multiple>
+                <div class="upload-content">
+                    <div class="upload-icon">📄</div>
+                    <p>यहाँ PDF फाइलें खींचें या क्लिक करके चुनें</p>
+                    <p>Drag & Drop PDF files here or click to select</p>
+                </div>
+            </div>
+            <div class="upload-progress" id="uploadProgress" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <p id="progressText">Uploading... 0%</p>
+            </div>
+        </section>
 
-<footer class="footer">
-  <p>© 2026 Educational Library • Made with ❤️ for Students</p>
-</footer>
+        <section class="library-section">
+            <h2>पुस्तकालय / Library</h2>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="PDF खोजें / Search PDFs...">
+                <button id="searchBtn">🔍 खोजें</button>
+            </div>
+            <div class="pdf-grid" id="pdfGrid">
+                </div>
+        </section>
+    </main>
 
-<script src="script.js"></script>
+    <div class="modal" id="pdfModal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <div class="pdf-viewer">
+                <iframe id="pdfFrame" src="" width="100%" height="100%"></iframe>
+            </div>
+            <div class="pdf-controls">
+                <button id="downloadBtn">⬇️ डाउनलोड / Download</button>
+                <button id="fullscreenBtn">⛶ फुलस्क्रीन / Fullscreen</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Educational Library - Made with ❤️ for Learning</p>
+        </div>
+    </footer>
+    
+    <div id="appToast" class="toast"></div>
+
+    <script src="script.js"></script>
 </body>
-</html>
+  </html>
+                  
